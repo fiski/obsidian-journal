@@ -1,0 +1,9 @@
+{
+  "name": "journal-summary",
+  "version": "1.0.0",
+  "description": "AI-powered journal summarizer for Obsidian",
+  "main": "summarize.js",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.37.0"
+  }
+}
