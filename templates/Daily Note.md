@@ -6,4 +6,6 @@
 
 ## Challenges
 
+## Did I learn anything?
+
 ## Tomorrow
