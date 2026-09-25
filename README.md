@@ -157,6 +157,8 @@ Press `Cmd+Shift+D` to open today's note. It will be created automatically in `J
 
 ## Challenges
 
+## Did I learn anything?
+
 ## Tomorrow
 ```
 

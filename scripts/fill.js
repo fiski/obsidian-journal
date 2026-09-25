@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { formatDate, parseLocalDate, getISOWeek, getMostRecentMonday } = require('./lib');
 
 const VAULT_PATH = path.resolve(__dirname, '../..');
 const DAILY_PATH = path.join(VAULT_PATH, 'Journal', 'Daily');
@@ -12,33 +13,8 @@ const args = process.argv.slice(2);
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-function formatDate(d) {
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-function parseLocalDate(str) {
-  return new Date(str + 'T00:00:00');
-}
-
 function formatDisplayDate(d) {
   return `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()} ${d.getFullYear()}`;
-}
-
-function getISOWeek(d) {
-  const date = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-  const week1 = new Date(date.getFullYear(), 0, 4);
-  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-}
-
-function getMostRecentMonday(d) {
-  const date = new Date(d);
-  const day = date.getDay();
-  date.setDate(date.getDate() - (day === 0 ? 6 : day - 1));
-  return date;
 }
 
 function printUsage() {
@@ -94,7 +70,7 @@ if (args.includes('--last-week')) {
 
 const template = fs.existsSync(TEMPLATE_PATH)
   ? fs.readFileSync(TEMPLATE_PATH, 'utf-8')
-  : '# {{date:dddd, MMMM D YYYY}}\n\n## What happened\n\n## Wins\n\n## Challenges\n\n## Tomorrow\n';
+  : '# {{date:dddd, MMMM D YYYY}}\n\n## What happened\n\n## Wins\n\n## Challenges\n\n## Did I learn anything?\n\n## Tomorrow\n';
 
 fs.mkdirSync(DAILY_PATH, { recursive: true });
 

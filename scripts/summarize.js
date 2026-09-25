@@ -4,6 +4,7 @@ const { Anthropic } = require('@anthropic-ai/sdk');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { formatDate, parseLocalDate, getISOWeek, getMostRecentMonday } = require('./lib');
 
 const VAULT_PATH = path.resolve(__dirname, '../..');
 const DAILY_PATH = path.join(VAULT_PATH, 'Journal', 'Daily');
@@ -11,28 +12,10 @@ const SUMMARIES_PATH = path.join(VAULT_PATH, 'Journal', 'Summaries');
 
 const args = process.argv.slice(2);
 
-function formatDate(d) {
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-function parseLocalDate(str) {
-  return new Date(str + 'T00:00:00');
-}
-
 function formatDisplayDate(str) {
   return parseLocalDate(str).toLocaleDateString('en-US', {
     month: 'long', day: 'numeric', year: 'numeric'
   });
-}
-
-function getISOWeek(d) {
-  const date = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-  const week1 = new Date(date.getFullYear(), 0, 4);
-  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
 
 function formatWeekLabel(fromStr, toStr) {
@@ -52,14 +35,6 @@ function formatWeekLabel(fromStr, toStr) {
 
   const last = sorted[sorted.length - 1];
   return `Vecka ${sorted.slice(0, -1).join(', ')} & ${last}`;
-}
-
-function getMostRecentMonday(from) {
-  const d = new Date(from);
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  d.setDate(d.getDate() + diff);
-  return d;
 }
 
 function getLastWeekRange() {
